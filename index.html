@@ -1,159 +1,231 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Selamat Ulang Tahun</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Animasi Malam: Bulan, Bintang, Kunang-Kunang</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: linear-gradient(to bottom, #0d1b2a, #1b263b);
-      font-family: 'Georgia', serif;
-      overflow: hidden;
-      color: #f8f8f8;
+    :root{
+      --bg1: #071028;
+      --bg2: #0b2740;
+      --star-color: rgba(255,255,230,0.95);
+      --moon-color: #fff7d9;
+      --soft: 12px;
     }
 
-    .stars, .twinkling {
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    .sky{
+      position:relative;min-height:100vh;overflow:hidden;
+      background: radial-gradient(ellipse at 20% 10%, rgba(14,38,60,0.7) 0%, transparent 30%),
+                  linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 60%);
+    }
+
+    .stars, .shooting-stars {position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none}
+
+    .star{
+      position:absolute;width:2px;height:2px;border-radius:50%;
+      background:var(--star-color);opacity:0.9;
+      box-shadow:0 0 6px rgba(255,255,220,0.6);
+      animation:twinkle 4s infinite ease-in-out;
+    }
+    .star.large{width:3px;height:3px;box-shadow:0 0 8px rgba(255,255,220,0.8)}
+
+    @keyframes twinkle{
+      0%,100%{opacity:0.6;transform:scale(1)}
+      50%{opacity:1;transform:scale(1.2)}
+    }
+
+    .shoot{
+      position:absolute;left:0;top:0;width:4px;height:4px;border-radius:50%;
+      background:linear-gradient(90deg,rgba(255,255,255,1),rgba(255,255,255,0.1));
+      box-shadow:0 0 10px rgba(255,255,255,0.9);
+      transform:rotate(-25deg);
+      opacity:0;
+    }
+
+    .moon{
+      position:absolute;right:8%;top:8%;width:160px;height:160px;border-radius:50%;
+      background: radial-gradient(circle at 30% 25%, #fffef2 0%, #fff7d9 40%, #f0e6b0 60%, #d9c98a 100%);
+      box-shadow:0 20px 60px rgba(0,0,0,0.35), 0 0 30px rgba(255,240,200,0.08) inset;
+    }
+    .moon::before{
+      content:"";position:absolute;right:-18px;top:-6px;width:95px;height:95px;border-radius:50%;
+      background:rgba(7,16,30,0.7);
+      mix-blend-mode:multiply;
+    }
+    .moon .crater{position:absolute;border-radius:50%;background:rgba(0,0,0,0.06)}
+    .c1{width:34px;height:34px;left:20px;top:38px}
+    .c2{width:18px;height:18px;left:78px;top:28px}
+    .c3{width:22px;height:22px;left:110px;top:74px}
+
+    .clouds{position:absolute;left:0;right:0;top:30%;height:300px;mix-blend-mode:screen;opacity:0.12;}
+    .cloud{position:absolute;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.35) 40%, rgba(255,255,255,0) 70%);border-radius:50%;}
+
+    .firefly{
+      position:absolute;width:10px;height:10px;border-radius:50%;
+      background: radial-gradient(circle at 50% 40%, rgba(255,255,140,1) 0%, rgba(255,255,140,0) 70%);
+      box-shadow:0 0 18px rgba(255,255,150,0.9);
+      opacity:0;
+      animation:float 8s infinite ease-in-out, blink 2.5s infinite ease-in-out;
+      pointer-events:none;
+    }
+
+    @keyframes float{
+      0%{transform:translateY(0) translateX(0)}
+      50%{transform:translateY(-40px) translateX(30px)}
+      100%{transform:translateY(0) translateX(0)}
+    }
+    @keyframes blink{
+      0%{opacity:0}
+      10%{opacity:0.95}
+      40%{opacity:0.5}
+      60%{opacity:1}
+      100%{opacity:0}
+    }
+
+    .ground{
+      position:absolute;left:0;right:0;bottom:0;height:22vh;background:linear-gradient(180deg,rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,1) 100%);
+      pointer-events:none;
+    }
+    .hills{position:absolute;left:0;right:0;bottom:0;height:22vh;background:radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.8) 0%, transparent 40%), radial-gradient(ellipse at 80% 90%, rgba(0,0,0,0.85) 0%, transparent 45%);} 
+
+    .ui{position:fixed;left:12px;top:12px;background:rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:#e9f1ff;font-size:13px;backdrop-filter:blur(6px)}
+
+    .quote {
       position: absolute;
+      bottom: 40px;
       width: 100%;
-      height: 100%;
-      top: 0; left: 0;
-      z-index: -1;
-    }
-
-    .stars {
-      background: #000 url('https://raw.githubusercontent.com/robin-dela/css-background-animation/master/images/stars.png') repeat top center;
-      z-index: -2;
-    }
-
-    .twinkling {
-      background: transparent url('https://raw.githubusercontent.com/robin-dela/css-background-animation/master/images/twinkling.png') repeat top center;
-      animation: moveStars 200s linear infinite;
-    }
-
-    @keyframes moveStars {
-      0% { background-position: 0 0; }
-      100% { background-position: -10000px 5000px; }
-    }
-
-    .moon {
-      position: absolute;
-      top: 50px;
-      right: 100px;
-      width: 120px;
-      height: 120px;
-      background: radial-gradient(circle at 30% 30%, #fff6e5, #d4cfc1);
-      border-radius: 50%;
-      box-shadow: 0 0 25px #fff9e0;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 100px 30px;
       text-align: center;
-      z-index: 1;
-      animation: fadeIn 2s ease-in-out;
-    }
-
-    .line {
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeLine 1s ease forwards;
-    }
-
-    /* Fade-in each line with delay */
-    .line:nth-child(1) { animation-delay: 0.5s; }
-    .line:nth-child(2) { animation-delay: 1.5s; }
-    .line:nth-child(3) { animation-delay: 2.5s; }
-    .line:nth-child(4) { animation-delay: 3.5s; }
-    .line:nth-child(5) { animation-delay: 4.5s; }
-    .line:nth-child(6) { animation-delay: 5.5s; }
-    .line:nth-child(7) { animation-delay: 6.5s; }
-    .line:nth-child(8) { animation-delay: 7.5s; }
-    .line:nth-child(9) { animation-delay: 8.5s; }
-    .line:nth-child(10) { animation-delay: 9.5s; }
-    .line:nth-child(11) { animation-delay: 10.5s; }
-    .line:nth-child(12) { animation-delay: 11.5s; }
-    .line:nth-child(13) { animation-delay: 12.5s; }
-    .line:nth-child(14) { animation-delay: 13.5s; }
-    .line:nth-child(15) { animation-delay: 14.5s; }
-
-    @keyframes fadeLine {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      font-size: 18px;
+      color: #f2f2f2;
+      opacity: 0.9;
+      font-style: italic;
+      letter-spacing: 0.5px;
+      animation: fadeIn 3s ease-in-out;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {opacity: 0;}
+      to {opacity: 0.9;}
     }
 
-    audio {
-      display: none;
-    }
-
-    .shooting-star {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 2px;
-  height: 100px;
-  background: linear-gradient(-45deg, white, transparent);
-  opacity: 0.8;
-  transform: rotate(45deg);
-  animation: shooting 3s linear infinite;
-}
-
-@keyframes shooting {
-  0% {
-    transform: translate(0, 0) rotate(45deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(800px, 800px) rotate(45deg);
-    opacity: 0;
-  }
-}
-
-h1 {
-  font-size: 28px; /* judul lebih kecil */
-}
-
-p {
-  font-size: 11px; /* teks isi lebih kecil */
-  line-height: 1.6;
-}
-
-
+    @media (max-width:520px){.moon{width:110px;height:110px;right:6%;top:6%}}
   </style>
 </head>
 <body>
+  <div class="sky" id="sky">
+    <div class="stars" id="stars"></div>
+    <div class="shooting-stars" id="shoots"></div>
 
-  <div class="stars"></div>
-  <div class="twinkling"></div>
-  <div class="moon"></div>
-  <!-- Bintang jatuh -->
-<div class="shooting-star" style="top: 100px; left: 200px; animation-delay: 2s;"></div>
-<div class="shooting-star" style="top: 300px; left: 50px; animation-delay: 5s;"></div>
-<div class="shooting-star" style="top: 200px; left: 400px; animation-delay: 8s;"></div>
+    <div class="moon" aria-hidden="true">
+      <div class="crater c1"></div>
+      <div class="crater c2"></div>
+      <div class="crater c3"></div>
+    </div>
 
+    <div class="clouds" id="clouds"></div>
+    <div id="fireflies"></div>
 
+    <div class="ground"><div class="hills"></div></div>
+    <div class="ui">Animasi: Bulan • Bintang • Kunang-kunang — klik layar untuk ledakan bintang</div>
 
-  <div class="container">
-    <p>Wait</p>
+    <div class="quote">“Waiting...”</div>
   </div>
 
-  <!-- Musik opsional -->
-  <audio autoplay loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/02/22/audio_a9f164e292.mp3" type="audio/mpeg">
-  </audio>
+  <script>
+    const sky = document.getElementById('sky');
+    const stars = document.getElementById('stars');
+    const shoots = document.getElementById('shoots');
+    const fireflies = document.getElementById('fireflies');
+    const clouds = document.getElementById('clouds');
 
+    const W = () => window.innerWidth;
+    const H = () => window.innerHeight;
+
+    function makeStars(count = 140){
+      for(let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className = 'star'+(Math.random()>0.92?' large':'');
+        s.style.left = Math.random()*W() + 'px';
+        s.style.top  = Math.random()*H()*0.75 + 'px';
+        s.style.animationDelay = (Math.random()*6) + 's';
+        s.style.opacity = (0.4+Math.random()*0.8).toFixed(2);
+        stars.appendChild(s);
+      }
+    }
+
+    function shoot(){
+      const s = document.createElement('div');
+      s.className = 'shoot';
+      s.style.left = Math.random()*W()*0.8 + 'px';
+      s.style.top  = Math.random()*H()*0.4 + 'px';
+      shoots.appendChild(s);
+      const len = 300 + Math.random()*500;
+      const dur = 900 + Math.random()*700;
+      s.animate([
+        {transform:'translate3d(0,0,0) rotate(-25deg)', opacity:1},
+        {transform:`translate3d(${len}px, ${len*0.35}px, 0) rotate(-25deg)`, opacity:0}
+      ],{duration:dur, easing:'cubic-bezier(.22,.9,.25,1)'}).onfinish = ()=> s.remove();
+    }
+
+    function makeClouds(){
+      for(let i=0;i<6;i++){
+        const c = document.createElement('div');
+        c.className='cloud';
+        const size = 160 + Math.random()*260;
+        c.style.width = size + 'px';
+        c.style.height = (size*0.6)+'px';
+        c.style.left = (Math.random()*100)+'%';
+        c.style.top = (10 + Math.random()*40)+'%';
+        c.style.opacity = (0.06 + Math.random()*0.15).toFixed(2);
+        clouds.appendChild(c);
+        c.animate([{transform:'translateX(0)'},{transform:'translateX('+((Math.random()>0.5?1:-1)*(50+Math.random()*200))+'px)'}],
+          {duration:30000 + Math.random()*60000, direction:'alternate', iterations:Infinity, easing:'linear'});
+      }
+    }
+
+    function makeFireflies(count = 18){
+      for(let i=0;i<count;i++){
+        const f=document.createElement('div');
+        f.className='firefly';
+        const x=Math.random()*W();
+        const y=H()*0.5+Math.random()*(H()*0.35);
+        f.style.left=x+'px';f.style.top=y+'px';
+        f.style.animationDuration=(6+Math.random()*8)+'s';
+        f.style.animationDelay=(Math.random()*4)+'s';
+        const s=6+Math.random()*10;f.style.width=s+'px';f.style.height=s+'px';
+        fireflies.appendChild(f);
+        const dx=(Math.random()*160)-80;const dy=(Math.random()*120)-60;
+        f.animate([{transform:'translate3d(0,0,0)'},{transform:`translate3d(${dx}px,${dy}px,0)`},{transform:'translate3d(0,0,0)'}],
+          {duration:6000+Math.random()*9000,iterations:Infinity,direction:'alternate',easing:'ease-in-out'});
+      }
+    }
+
+    function init(){
+      makeStars();
+      makeClouds();
+      makeFireflies();
+      setInterval(()=>{ if(Math.random()>0.6) shoot(); }, 2500 + Math.random()*3000);
+    }
+
+    // klik -> ledakan bintang
+    sky.addEventListener('click', e=>{
+      const rx=e.clientX, ry=e.clientY;
+      for(let i=0;i<18;i++){
+        const p=document.createElement('div');
+        p.className='shoot';
+        p.style.left=rx+'px';p.style.top=ry+'px';
+        shoots.appendChild(p);
+        const ang=(Math.PI*2)*(i/18)+(Math.random()*0.4-0.2);
+        const dist=50+Math.random()*220;
+        const tx=Math.cos(ang)*dist, ty=Math.sin(ang)*dist;
+        p.animate([{transform:'translate3d(0,0,0) scale(1)',opacity:1},
+                   {transform:`translate3d(${tx}px,${ty}px,0) scale(0.6)`,opacity:0}],
+                   {duration:700+Math.random()*600,easing:'cubic-bezier(.2,.9,.25,1)'}).onfinish=()=>p.remove();
+      }
+    });
+
+    init();
+  </script>
 </body>
 </html>
